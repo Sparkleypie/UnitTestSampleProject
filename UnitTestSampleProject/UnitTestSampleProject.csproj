@@ -50,8 +50,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Migrations\201812281257195_InitialCreate.cs" />
+    <Compile Include="Migrations\201812281257195_InitialCreate.Designer.cs">
+      <DependentUpon>201812281257195_InitialCreate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\Book.cs" />
-    <Compile Include="Model\BookContext.cs" />
+    <Compile Include="Model\UitleenContext.cs" />
     <Compile Include="Model\Order.cs" />
     <Compile Include="Model\Person.cs" />
     <Compile Include="Program.cs" />
@@ -64,6 +69,11 @@
   <ItemGroup>
     <Folder Include="Interfaces\" />
     <Folder Include="Repositories\" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201812281257195_InitialCreate.resx">
+      <DependentUpon>201812281257195_InitialCreate.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
