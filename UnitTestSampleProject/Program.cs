@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnitTestSampleProject.Model;
 
 namespace UnitTestSampleProject
@@ -12,6 +14,9 @@ namespace UnitTestSampleProject
                 Console.WriteLine("What do you want to do?");
                 Console.WriteLine("1 - Add a person");
                 Console.WriteLine("2 - Add a book");
+                Console.WriteLine("3 - Place an order");
+                Console.WriteLine("4 - List Persons");
+                Console.WriteLine("5 - List Books");
                 Console.WriteLine("E - Exit");
 
                 var input = Console.ReadLine();
@@ -23,6 +28,9 @@ namespace UnitTestSampleProject
                         break;
                     case "2":
                         AddBook();
+                        break;
+                    case "3":
+                        PlaceOrder();
                         break;
                     case "4":
                         ListPersons();
@@ -45,9 +53,9 @@ namespace UnitTestSampleProject
             using (var uitleenContext = new UitleenContext())
             {
                 var allPersons = uitleenContext.Persons;
-            
+
                 foreach (var person in allPersons)
-                {            
+                {
                     Console.WriteLine($"{person.Id}: {person.FirstName} + {person.LastName}, {person.BirthDate}");
                 }
             }
@@ -91,7 +99,7 @@ namespace UnitTestSampleProject
 
         public static void AddBook()
         {
-            using(var uitleenContext = new UitleenContext())
+            using (var uitleenContext = new UitleenContext())
             {
                 var book = new Book();
 
@@ -120,6 +128,44 @@ namespace UnitTestSampleProject
                 book.DateOfPublication = dateOfPublication;
                 //kusje voor jou <3
                 uitleenContext.Books.Add(book);
+                uitleenContext.SaveChanges();
+            }
+
+        }
+
+        public static void PlaceOrder()
+        {
+            using (var uitleenContext = new UitleenContext())
+            {
+                var order = new Order();
+
+                Console.WriteLine("Hello, who are you?");
+                ListPersons();
+
+                var selectedPersonId = Convert.ToInt32(Console.ReadLine());
+
+                var person = uitleenContext.Persons.Where(x => x.Id == selectedPersonId).First();
+
+                Console.WriteLine($"Hi {person.FirstName}, what books do you want to order? Please seperate them by a ,");
+
+                ListBooks();
+                var selectedBooksString = Console.ReadLine();
+
+                var selectedBooksSplitted = selectedBooksString.Split(',');
+          
+                order.Books = new List<Book>();
+                foreach (var bookIdString in selectedBooksSplitted)
+                {
+                    var number = Convert.ToInt32(bookIdString);
+                    var book = uitleenContext.Books.Where(x => x.Id == number).First();
+                    order.Books.Add(book);
+                }
+
+                order.Person = person;
+                order.OrderNumber = new Random().Next(10000);
+                order.ExpectedDeliveryDate = DateTime.Now.AddDays(19);
+
+                uitleenContext.Orders.Add(order);
                 uitleenContext.SaveChanges();
             }
         }
